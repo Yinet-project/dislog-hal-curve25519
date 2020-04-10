@@ -1,3 +1,5 @@
+use core::ops::{Add, Mul, Neg};
+
 use crate::ScalarInner;
 use core::fmt::Debug;
 use curve25519_dalek::traits::Identity;

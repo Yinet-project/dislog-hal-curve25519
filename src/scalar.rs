@@ -13,7 +13,7 @@ impl ScalarInner {
             data: curve25519_dalek::scalar::Scalar::from_bytes_mod_order(scalar),
         }
     }
-    pub fn setInner(scalar: curve25519_dalek::scalar::Scalar) -> Self {
+    pub(crate) fn setInner(scalar: curve25519_dalek::scalar::Scalar) -> Self {
         Self { data: scalar }
     }
     pub(crate) fn getInner(&self) -> curve25519_dalek::scalar::Scalar {
