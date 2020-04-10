@@ -88,13 +88,13 @@ impl ScalarNumber for ScalarInner {
 
     fn add(&self, rhs: &ScalarInner) -> ScalarInner {
         Self {
-            data: self.data * rhs.data,
+            data: &self.data + &rhs.data,
         }
     }
 
     fn mul(&self, rhs: &Self) -> Self {
         Self {
-            data: self.data * rhs.data,
+            data: &self.data * &rhs.data,
         }
     }
 

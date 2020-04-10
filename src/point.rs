@@ -1,4 +1,5 @@
 use crate::ScalarInner;
+use core::fmt::Debug;
 use curve25519_dalek::traits::Identity;
 use dislog_hal::Bytes;
 use dislog_hal::DisLogPoint;
@@ -10,6 +11,12 @@ pub struct PointInner {
 impl PointInner {
     pub fn new(point: curve25519_dalek::edwards::EdwardsPoint) -> Self {
         Self { data: point }
+    }
+}
+
+impl Debug for PointInner {
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        write!(f, "Scalar{{\n\tbytes: {:?},\n}}", &self.data)
     }
 }
 
