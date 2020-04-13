@@ -1,9 +1,9 @@
 extern crate dislog_hal_curve25519;
 
-use dislog_hal::{Bytes, DisLogPoint, Point, Scalar, ScalarNumber};
+use dislog_hal::{Bytes, DisLogPoint, Point, Scalar};
 use dislog_hal_curve25519::{PointInner, ScalarInner};
 
-fn get_sim_Scalar25519(a: u8) -> Scalar<ScalarInner> {
+fn get_sim_scalar25519(a: u8) -> Scalar<ScalarInner> {
     let mut vec = [0u8; 32];
     vec[0] = a;
 
@@ -32,28 +32,28 @@ fn test_scalar() {
     assert_eq!(scalar_a, scalar_b);
     assert_eq!(
         scalar_a + scalar_a + scalar_a,
-        scalar_b * get_sim_Scalar25519(3)
+        scalar_b * get_sim_scalar25519(3)
     );
 
-    assert_eq!(scalar_a * get_sim_Scalar25519(2), scalar_a + scalar_b);
+    assert_eq!(scalar_a * get_sim_scalar25519(2), scalar_a + scalar_b);
 
-    assert_eq!(scalar_a * &get_sim_Scalar25519(2), scalar_a + &scalar_b);
+    assert_eq!(scalar_a * &get_sim_scalar25519(2), scalar_a + &scalar_b);
 
-    assert_eq!(&scalar_a * get_sim_Scalar25519(2), &scalar_a + scalar_b);
+    assert_eq!(&scalar_a * get_sim_scalar25519(2), &scalar_a + scalar_b);
 
-    assert_eq!(&scalar_a * &get_sim_Scalar25519(2), &scalar_a + &scalar_b);
+    assert_eq!(&scalar_a * &get_sim_scalar25519(2), &scalar_a + &scalar_b);
 
-    //assert_eq!(get_sim_Scalar25519(0), scalar_a - scalar_b);
+    //assert_eq!(get_sim_scalar25519(0), scalar_a - scalar_b);
 
-    //assert_eq!(get_sim_Scalar25519(0), &scalar_a - scalar_b);
+    //assert_eq!(get_sim_scalar25519(0), &scalar_a - scalar_b);
 
-    //assert_eq!(get_sim_Scalar25519(0), scalar_a - &scalar_b);
+    //assert_eq!(get_sim_scalar25519(0), scalar_a - &scalar_b);
 
-    assert_eq!(get_sim_Scalar25519(0), &scalar_a - &scalar_b);
+    assert_eq!(get_sim_scalar25519(0), &scalar_a - &scalar_b);
 
     let inv_a = scalar_a.inv();
 
-    assert_eq!(inv_a * scalar_a, get_sim_Scalar25519(1));
+    assert_eq!(inv_a * scalar_a, get_sim_scalar25519(1));
 
     println!("inv_a:{:?}\n", Scalar::<ScalarInner>::order());
 
@@ -97,10 +97,10 @@ fn test_point() {
 
     assert_eq!(
         Point::<PointInner>::one() + Point::<PointInner>::one() + Point::<PointInner>::one(),
-        point_a * get_sim_Scalar25519(3)
+        point_a * get_sim_scalar25519(3)
     );
 
-    let point_last = point_b * (Scalar::<ScalarInner>::order() + (-get_sim_Scalar25519(1)));
+    let point_last = point_b * (Scalar::<ScalarInner>::order() + (-get_sim_scalar25519(1)));
 
     assert_eq!(point_one + point_last, point_zero);
 
@@ -125,19 +125,19 @@ fn test_point() {
                 96, 142, 161, 38, 161, 171, 105, 238, 119, 209, 177, 103, 18
             ]),
         },
-        point_one * get_sim_Scalar25519(3)
+        point_one * get_sim_scalar25519(3)
     );
 
-    //assert_eq!(&point_one * get_sim_Scalar25519(3), point_one * get_sim_Scalar25519(3));
+    //assert_eq!(&point_one * get_sim_scalar25519(3), point_one * get_sim_scalar25519(3));
 
     assert_eq!(
-        point_one * &get_sim_Scalar25519(3),
-        point_one * get_sim_Scalar25519(3)
+        point_one * &get_sim_scalar25519(3),
+        point_one * get_sim_scalar25519(3)
     );
 
     assert_eq!(
-        &point_one * &get_sim_Scalar25519(3),
-        point_one * get_sim_Scalar25519(3)
+        &point_one * &get_sim_scalar25519(3),
+        point_one * get_sim_scalar25519(3)
     );
 
     assert_eq!(
@@ -147,25 +147,25 @@ fn test_point() {
                 96, 142, 161, 38, 161, 171, 105, 238, 119, 209, 177, 103, 18
             ]),
         },
-        get_sim_Scalar25519(3) * point_one
+        get_sim_scalar25519(3) * point_one
     );
 
     assert_eq!(
-        &get_sim_Scalar25519(3) * point_one,
-        point_one * get_sim_Scalar25519(3)
+        &get_sim_scalar25519(3) * point_one,
+        point_one * get_sim_scalar25519(3)
     );
 
     assert_eq!(
-        get_sim_Scalar25519(3) * &point_one,
-        point_one * get_sim_Scalar25519(3)
+        get_sim_scalar25519(3) * &point_one,
+        point_one * get_sim_scalar25519(3)
     );
 
     assert_eq!(
-        &get_sim_Scalar25519(3) * &point_one,
-        point_one * get_sim_Scalar25519(3)
+        &get_sim_scalar25519(3) * &point_one,
+        point_one * get_sim_scalar25519(3)
     );
 
-    /// 4493907448824000747700850167940867464579944529806937181821189941592931634714
+    // 4493907448824000747700850167940867464579944529806937181821189941592931634714
     let scalar_ax = Scalar {
         inner: ScalarInner::from_bytes([
             0x1a, 0x0e, 0x97, 0x8a, 0x90, 0xf6, 0x62, 0x2d, 0x37, 0x47, 0x02, 0x3f, 0x8a, 0xd8,
@@ -175,7 +175,7 @@ fn test_point() {
     };
 
     assert_eq!(
-        scalar_ax * get_sim_Scalar25519(5) * get_sim_Scalar25519(3),
-        scalar_ax * get_sim_Scalar25519(15)
+        scalar_ax * get_sim_scalar25519(5) * get_sim_scalar25519(3),
+        scalar_ax * get_sim_scalar25519(15)
     );
 }

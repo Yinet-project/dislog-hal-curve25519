@@ -1,5 +1,3 @@
-use core::ops::{Add, Mul, Neg};
-
 use crate::ScalarInner;
 use core::fmt::Debug;
 use curve25519_dalek::traits::Identity;
@@ -60,7 +58,7 @@ impl DisLogPoint for PointInner {
     type Scalar = ScalarInner;
 
     fn order() -> Self::Scalar {
-        Self::Scalar::setInner(curve25519_dalek::constants::BASEPOINT_ORDER)
+        Self::Scalar::set_inner(curve25519_dalek::constants::BASEPOINT_ORDER)
     }
 
     fn zero() -> Self {
@@ -89,7 +87,7 @@ impl DisLogPoint for PointInner {
 
     fn mul(&self, rhs: &Self::Scalar) -> Self {
         Self {
-            data: self.data * rhs.getInner(),
+            data: self.data * rhs.get_inner(),
         }
     }
 
