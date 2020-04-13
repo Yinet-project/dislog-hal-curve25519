@@ -94,6 +94,6 @@ impl DisLogPoint for PointInner {
     }
 
     fn neg(&self) -> Self {
-        Self { data: self.data }
+        Self { data: -self.data }
     }
 }
