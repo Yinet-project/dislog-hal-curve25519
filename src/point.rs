@@ -22,10 +22,11 @@ impl Debug for PointInner {
 
 impl Bytes for PointInner {
     type BytesType = [u8; 32];
-    fn from_bytes(bytes: Self::BytesType) -> Self {
+    type Error = ();
+    fn from_bytes(bytes: Self::BytesType) -> Result<Self, ()> {
         match curve25519_dalek::edwards::CompressedEdwardsY::from_slice(&bytes).decompress() {
-            Some(x) => Self { data: x },
-            None => panic!("crash and burn"),
+            Some(x) => Ok(Self { data: x }),
+            None => Err(()),
         }
     }
 

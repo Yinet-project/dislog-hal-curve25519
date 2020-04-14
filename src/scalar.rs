@@ -8,11 +8,6 @@ pub struct ScalarInner {
 }
 
 impl ScalarInner {
-    pub fn new(scalar: [u8; 32]) -> Self {
-        Self {
-            data: curve25519_dalek::scalar::Scalar::from_bytes_mod_order(scalar),
-        }
-    }
     pub(crate) fn set_inner(scalar: curve25519_dalek::scalar::Scalar) -> Self {
         Self { data: scalar }
     }
@@ -23,10 +18,11 @@ impl ScalarInner {
 
 impl Bytes for ScalarInner {
     type BytesType = [u8; 32];
-    fn from_bytes(bytes: Self::BytesType) -> Self {
-        Self {
+    type Error = ();
+    fn from_bytes(bytes: Self::BytesType) -> Result<Self, ()> {
+        Ok(Self {
             data: curve25519_dalek::scalar::Scalar::from_bytes_mod_order(bytes),
-        }
+        })
     }
 
     fn to_bytes(&self) -> Self::BytesType {

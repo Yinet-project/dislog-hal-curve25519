@@ -8,20 +8,22 @@ fn get_sim_scalar25519(a: u8) -> Scalar<ScalarInner> {
     vec[0] = a;
 
     Scalar {
-        inner: ScalarInner::new(vec),
+        inner: ScalarInner::from_bytes(vec).unwrap(),
     }
 }
 
 #[test]
 fn test_scalar() {
-    let scalar_innera = ScalarInner::new([
+    let scalar_innera = ScalarInner::from_bytes([
         216, 154, 179, 139, 210, 121, 2, 71, 69, 99, 158, 216, 23, 173, 63, 100, 204, 0, 91, 50,
         219, 153, 57, 249, 28, 82, 31, 197, 100, 165, 192, 8,
-    ]);
-    let scalar_innerb = ScalarInner::new([
+    ])
+    .unwrap();
+    let scalar_innerb = ScalarInner::from_bytes([
         216, 154, 179, 139, 210, 121, 2, 71, 69, 99, 158, 216, 23, 173, 63, 100, 204, 0, 91, 50,
         219, 153, 57, 249, 28, 82, 31, 197, 100, 165, 192, 8,
-    ]);
+    ])
+    .unwrap();
 
     let scalar_a = Scalar {
         inner: scalar_innera,
@@ -71,14 +73,15 @@ fn test_point() {
         0x58, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
         0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
         0x66, 0x66,
-    ]);
+    ])
+    .unwrap();
     assert_eq!(point_innera, point_innerone);
 
     let point_innerb = PointInner::one();
 
     assert_eq!(
         point_innerone,
-        PointInner::from_bytes(point_innerone.to_bytes())
+        PointInner::from_bytes(point_innerone.to_bytes()).unwrap()
     );
 
     let point_a = Point {
@@ -123,7 +126,8 @@ fn test_point() {
             inner: PointInner::from_bytes([
                 212, 180, 245, 120, 72, 104, 195, 2, 4, 3, 36, 103, 23, 236, 22, 159, 247, 158, 38,
                 96, 142, 161, 38, 161, 171, 105, 238, 119, 209, 177, 103, 18
-            ]),
+            ])
+            .unwrap(),
         },
         point_one * get_sim_scalar25519(3)
     );
@@ -145,7 +149,8 @@ fn test_point() {
             inner: PointInner::from_bytes([
                 212, 180, 245, 120, 72, 104, 195, 2, 4, 3, 36, 103, 23, 236, 22, 159, 247, 158, 38,
                 96, 142, 161, 38, 161, 171, 105, 238, 119, 209, 177, 103, 18
-            ]),
+            ])
+            .unwrap(),
         },
         get_sim_scalar25519(3) * point_one
     );
@@ -171,7 +176,8 @@ fn test_point() {
             0x1a, 0x0e, 0x97, 0x8a, 0x90, 0xf6, 0x62, 0x2d, 0x37, 0x47, 0x02, 0x3f, 0x8a, 0xd8,
             0x26, 0x4d, 0xa7, 0x58, 0xaa, 0x1b, 0x88, 0xe0, 0x40, 0xd1, 0x58, 0x9e, 0x7b, 0x7f,
             0x23, 0x76, 0xef, 0x09,
-        ]),
+        ])
+        .unwrap(),
     };
 
     assert_eq!(
