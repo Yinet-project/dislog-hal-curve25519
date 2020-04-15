@@ -4,6 +4,11 @@ use curve25519_dalek::traits::Identity;
 use dislog_hal::Bytes;
 use dislog_hal::DisLogPoint;
 
+#[derive(Debug)]
+pub enum EccExceptEnum {
+    ParseError,
+}
+
 pub struct PointInner {
     data: curve25519_dalek::edwards::EdwardsPoint,
 }
@@ -22,11 +27,11 @@ impl Debug for PointInner {
 
 impl Bytes for PointInner {
     type BytesType = [u8; 32];
-    type Error = ();
-    fn from_bytes(bytes: Self::BytesType) -> Result<Self, ()> {
+    type Error = EccExceptEnum;
+    fn from_bytes(bytes: Self::BytesType) -> Result<Self, EccExceptEnum> {
         match curve25519_dalek::edwards::CompressedEdwardsY::from_slice(&bytes).decompress() {
             Some(x) => Ok(Self { data: x }),
-            None => Err(()),
+            None => Err(EccExceptEnum::ParseError),
         }
     }
 
