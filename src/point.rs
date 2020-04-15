@@ -1,13 +1,9 @@
+use crate::EccError;
 use crate::ScalarInner;
 use core::fmt::Debug;
 use curve25519_dalek::traits::Identity;
 use dislog_hal::Bytes;
 use dislog_hal::DisLogPoint;
-
-#[derive(Debug)]
-pub enum EccError {
-    ParseError,
-}
 
 pub struct PointInner {
     data: curve25519_dalek::edwards::EdwardsPoint,

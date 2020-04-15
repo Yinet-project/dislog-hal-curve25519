@@ -1,3 +1,4 @@
+use crate::EccError;
 use crate::PointInner;
 use core::fmt::Debug;
 use dislog_hal::Bytes;
@@ -18,8 +19,8 @@ impl ScalarInner {
 
 impl Bytes for ScalarInner {
     type BytesType = [u8; 32];
-    type Error = ();
-    fn from_bytes(bytes: Self::BytesType) -> Result<Self, ()> {
+    type Error = EccError;
+    fn from_bytes(bytes: Self::BytesType) -> Result<Self, EccError> {
         Ok(Self {
             data: curve25519_dalek::scalar::Scalar::from_bytes_mod_order(bytes),
         })
