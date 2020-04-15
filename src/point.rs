@@ -5,7 +5,7 @@ use dislog_hal::Bytes;
 use dislog_hal::DisLogPoint;
 
 #[derive(Debug)]
-pub enum EccExceptEnum {
+pub enum EccError {
     ParseError,
 }
 
@@ -27,11 +27,11 @@ impl Debug for PointInner {
 
 impl Bytes for PointInner {
     type BytesType = [u8; 32];
-    type Error = EccExceptEnum;
-    fn from_bytes(bytes: Self::BytesType) -> Result<Self, EccExceptEnum> {
+    type Error = EccError;
+    fn from_bytes(bytes: Self::BytesType) -> Result<Self, EccError> {
         match curve25519_dalek::edwards::CompressedEdwardsY::from_slice(&bytes).decompress() {
             Some(x) => Ok(Self { data: x }),
-            None => Err(EccExceptEnum::ParseError),
+            None => Err(EccError::ParseError),
         }
     }
 
