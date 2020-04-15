@@ -31,17 +31,26 @@ fn test_scalar() {
     let scalar_b = Scalar {
         inner: scalar_innerb,
     };
-    assert_eq!(scalar_a, scalar_b);
+    assert_eq!(scalar_a.clone(), scalar_b.clone());
     assert_eq!(
-        scalar_a + scalar_a + scalar_a,
-        scalar_b * get_sim_scalar25519(3)
+        scalar_a.clone() + scalar_a.clone() + scalar_a.clone(),
+        scalar_b.clone() * get_sim_scalar25519(3)
     );
 
-    assert_eq!(scalar_a * get_sim_scalar25519(2), scalar_a + scalar_b);
+    assert_eq!(
+        scalar_a.clone() * get_sim_scalar25519(2),
+        scalar_a.clone() + scalar_b.clone()
+    );
 
-    assert_eq!(scalar_a * &get_sim_scalar25519(2), scalar_a + &scalar_b);
+    assert_eq!(
+        scalar_a.clone() * &get_sim_scalar25519(2),
+        scalar_a.clone() + &scalar_b
+    );
 
-    assert_eq!(&scalar_a * get_sim_scalar25519(2), &scalar_a + scalar_b);
+    assert_eq!(
+        &scalar_a * get_sim_scalar25519(2),
+        &scalar_a + scalar_b.clone()
+    );
 
     assert_eq!(&scalar_a * &get_sim_scalar25519(2), &scalar_a + &scalar_b);
 
@@ -105,15 +114,15 @@ fn test_point() {
 
     let point_last = point_b * (Scalar::<ScalarInner>::order() + (-get_sim_scalar25519(1)));
 
-    assert_eq!(point_one + point_last, point_zero);
+    assert_eq!(point_one.clone() + point_last.clone(), point_zero.clone());
 
-    assert_eq!(&point_one + point_last, point_zero);
+    assert_eq!(&point_one + point_last.clone(), point_zero.clone());
 
-    assert_eq!(point_one + &point_last, point_zero);
+    assert_eq!(point_one.clone() + &point_last, point_zero.clone());
 
-    assert_eq!(&point_one + &point_last, point_zero);
+    assert_eq!(&point_one + &point_last, point_zero.clone());
 
-    assert_eq!(&point_last - &point_last, point_zero);
+    assert_eq!(&point_last - &point_last, point_zero.clone());
 
     //assert_eq!(&point_last - point_last, point_last - point_last);
 
@@ -129,19 +138,19 @@ fn test_point() {
             ])
             .unwrap(),
         },
-        point_one * get_sim_scalar25519(3)
+        point_one.clone() * get_sim_scalar25519(3)
     );
 
     //assert_eq!(&point_one * get_sim_scalar25519(3), point_one * get_sim_scalar25519(3));
 
     assert_eq!(
-        point_one * &get_sim_scalar25519(3),
-        point_one * get_sim_scalar25519(3)
+        point_one.clone() * &get_sim_scalar25519(3),
+        point_one.clone() * get_sim_scalar25519(3)
     );
 
     assert_eq!(
         &point_one * &get_sim_scalar25519(3),
-        point_one * get_sim_scalar25519(3)
+        point_one.clone() * get_sim_scalar25519(3)
     );
 
     assert_eq!(
@@ -152,22 +161,22 @@ fn test_point() {
             ])
             .unwrap(),
         },
-        get_sim_scalar25519(3) * point_one
+        get_sim_scalar25519(3) * point_one.clone()
     );
 
     assert_eq!(
-        &get_sim_scalar25519(3) * point_one,
-        point_one * get_sim_scalar25519(3)
+        &get_sim_scalar25519(3) * point_one.clone(),
+        point_one.clone() * get_sim_scalar25519(3)
     );
 
     assert_eq!(
         get_sim_scalar25519(3) * &point_one,
-        point_one * get_sim_scalar25519(3)
+        point_one.clone() * get_sim_scalar25519(3)
     );
 
     assert_eq!(
         &get_sim_scalar25519(3) * &point_one,
-        point_one * get_sim_scalar25519(3)
+        point_one.clone() * get_sim_scalar25519(3)
     );
 
     // 4493907448824000747700850167940867464579944529806937181821189941592931634714
@@ -181,7 +190,7 @@ fn test_point() {
     };
 
     assert_eq!(
-        scalar_ax * get_sim_scalar25519(5) * get_sim_scalar25519(3),
-        scalar_ax * get_sim_scalar25519(15)
+        scalar_ax.clone() * get_sim_scalar25519(5) * get_sim_scalar25519(3),
+        scalar_ax.clone() * get_sim_scalar25519(15)
     );
 }
