@@ -1,3 +1,4 @@
+use crate::EccError;
 use crate::ScalarInner;
 use core::fmt::Debug;
 use curve25519_dalek::traits::Identity;
@@ -22,10 +23,11 @@ impl Debug for PointInner {
 
 impl Bytes for PointInner {
     type BytesType = [u8; 32];
-    fn from_bytes(bytes: Self::BytesType) -> Self {
+    type Error = EccError;
+    fn from_bytes(bytes: Self::BytesType) -> Result<Self, EccError> {
         match curve25519_dalek::edwards::CompressedEdwardsY::from_slice(&bytes).decompress() {
-            Some(x) => Self { data: x },
-            None => panic!("crash and burn"),
+            Some(x) => Ok(Self { data: x }),
+            None => Err(EccError::ParseError),
         }
     }
 
