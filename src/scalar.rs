@@ -3,6 +3,7 @@ use crate::PointInner;
 use core::fmt::Debug;
 use dislog_hal::Bytes;
 use dislog_hal::ScalarNumber;
+use rand::RngCore;
 
 pub struct ScalarInner {
     data: curve25519_dalek::scalar::Scalar,
@@ -64,6 +65,19 @@ impl Debug for ScalarInner {
 
 impl ScalarNumber for ScalarInner {
     type Point = PointInner;
+
+    fn random<R: RngCore>(rng: &mut R) -> Self {
+        let mut input = [0u8; 32];
+        rng.fill_bytes(&mut input);
+
+        loop {
+            if let Ok(ret) = Self::from_bytes(input) {
+                if ret != Self::zero() {
+                    return ret;
+                }
+            }
+        }
+    }
 
     fn order() -> Self {
         Self {
