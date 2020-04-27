@@ -2,6 +2,7 @@ extern crate dislog_hal_curve25519;
 
 use dislog_hal::{Bytes, DisLogPoint, Point, Scalar};
 use dislog_hal_curve25519::{PointInner, ScalarInner};
+use rand::thread_rng;
 
 fn get_sim_scalar25519(a: u8) -> Scalar<ScalarInner> {
     let mut vec = [0u8; 32];
@@ -193,4 +194,8 @@ fn test_point() {
         scalar_ax.clone() * get_sim_scalar25519(5) * get_sim_scalar25519(3),
         scalar_ax.clone() * get_sim_scalar25519(15)
     );
+
+    let mut rng = thread_rng();
+    let rand_a = Scalar::<ScalarInner>::random(&mut rng);
+    println!("{:?}", rand_a);
 }

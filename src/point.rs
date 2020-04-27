@@ -2,8 +2,7 @@ use crate::EccError;
 use crate::ScalarInner;
 use core::fmt::Debug;
 use curve25519_dalek::traits::Identity;
-use dislog_hal::Bytes;
-use dislog_hal::DisLogPoint;
+use dislog_hal::{Bytes, DisLogPoint, Scalar};
 
 pub struct PointInner {
     data: curve25519_dalek::edwards::EdwardsPoint,
@@ -95,5 +94,23 @@ impl DisLogPoint for PointInner {
 
     fn neg(&self) -> Self {
         Self { data: -self.data }
+    }
+
+    fn get_x(&self) -> Scalar<Self::Scalar> {
+        let num = [0u8; 32];
+        //num.clone_from_slice(&self.data.X.to_bytes()[..]);
+
+        Scalar {
+            inner: ScalarInner::from_bytes(num).unwrap(),
+        }
+    }
+
+    fn get_y(&self) -> Scalar<Self::Scalar> {
+        let num = [0u8; 32];
+        //num.clone_from_slice(&self.data.Y.to_bytes()[..]);
+
+        Scalar {
+            inner: ScalarInner::from_bytes(num).unwrap(),
+        }
     }
 }
