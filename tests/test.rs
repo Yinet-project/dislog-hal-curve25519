@@ -184,7 +184,11 @@ fn test_point() {
     let mut rng = thread_rng();
     let rand_a = Scalar::<ScalarInner>::random(&mut rng);
     println!("{:?}", rand_a);
+}
 
+#[test]
+fn test_point_json_serial() {
+    let point_one = Point::<PointInner>::one();
     let json_str = serde_json::to_string(&point_one).unwrap();
     assert_eq!(
         String::from("\"5866666666666666666666666666666666666666666666666666666666666666\""),
