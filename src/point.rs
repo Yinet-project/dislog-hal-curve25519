@@ -3,6 +3,9 @@ use crate::ScalarInner;
 use core::fmt::Debug;
 use curve25519_dalek::traits::Identity;
 use dislog_hal::{Bytes, DisLogPoint, Scalar};
+use hex::{FromHex, ToHex};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use std::string::String;
 
 pub struct PointInner {
     data: curve25519_dalek::edwards::EdwardsPoint,
@@ -31,7 +34,7 @@ impl Bytes for PointInner {
     }
 
     fn to_bytes(&self) -> Self::BytesType {
-        self.data.compress().as_bytes().clone()
+        *self.data.compress().as_bytes()
     }
 }
 
@@ -39,17 +42,11 @@ impl Copy for PointInner {}
 
 impl Clone for PointInner {
     fn clone(&self) -> Self {
-        Self {
-            data: self.data.clone(),
-        }
+        Self { data: self.data }
     }
 }
 
 impl PartialEq for PointInner {
-    fn ne(&self, other: &Self) -> bool {
-        !self.data.eq(&other.data)
-    }
-
     fn eq(&self, other: &Self) -> bool {
         self.data.eq(&other.data)
     }
@@ -100,17 +97,36 @@ impl DisLogPoint for PointInner {
         let num = [0u8; 32];
         //num.clone_from_slice(&self.data.X.to_bytes()[..]);
 
-        Scalar {
-            inner: ScalarInner::from_bytes(num).unwrap(),
-        }
+        Scalar(ScalarInner::from_bytes(num).unwrap())
     }
 
     fn get_y(&self) -> Scalar<Self::Scalar> {
         let num = [0u8; 32];
         //num.clone_from_slice(&self.data.Y.to_bytes()[..]);
 
-        Scalar {
-            inner: ScalarInner::from_bytes(num).unwrap(),
-        }
+        Scalar(ScalarInner::from_bytes(num).unwrap())
+    }
+}
+
+impl Serialize for PointInner {
+    fn serialize<SE>(&self, serializer: SE) -> Result<SE::Ok, SE::Error>
+    where
+        SE: Serializer,
+    {
+        serializer.serialize_str(&self.to_bytes().encode_hex_upper::<String>())
+    }
+}
+
+impl<'de> Deserialize<'de> for PointInner {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let d_str = String::deserialize(deserializer)
+            .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))?;
+        let d_byte = <PointInner as Bytes>::BytesType::from_hex(d_str)
+            .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))?;
+        PointInner::from_bytes(d_byte)
+            .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))
     }
 }

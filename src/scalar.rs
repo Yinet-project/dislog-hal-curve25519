@@ -3,7 +3,10 @@ use crate::PointInner;
 use core::fmt::Debug;
 use dislog_hal::Bytes;
 use dislog_hal::ScalarNumber;
+use hex::{FromHex, ToHex};
 use rand::RngCore;
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use std::string::String;
 
 pub struct ScalarInner {
     data: curve25519_dalek::scalar::Scalar,
@@ -34,9 +37,7 @@ impl Bytes for ScalarInner {
 
 impl Clone for ScalarInner {
     fn clone(&self) -> Self {
-        Self {
-            data: self.data.clone(),
-        }
+        Self { data: self.data }
     }
 }
 
@@ -45,10 +46,6 @@ impl Copy for ScalarInner {}
 impl PartialEq for ScalarInner {
     fn eq(&self, other: &Self) -> bool {
         self.data.eq(&other.data)
-    }
-
-    fn ne(&self, other: &Self) -> bool {
-        !self.data.eq(&other.data)
     }
 }
 
@@ -99,13 +96,13 @@ impl ScalarNumber for ScalarInner {
 
     fn add(&self, rhs: &ScalarInner) -> ScalarInner {
         Self {
-            data: &self.data + &rhs.data,
+            data: self.data + rhs.data,
         }
     }
 
     fn mul(&self, rhs: &Self) -> Self {
         Self {
-            data: &self.data * &rhs.data,
+            data: self.data * rhs.data,
         }
     }
 
@@ -117,5 +114,28 @@ impl ScalarNumber for ScalarInner {
 
     fn neg(&self) -> Self {
         Self { data: -&self.data }
+    }
+}
+
+impl Serialize for ScalarInner {
+    fn serialize<SE>(&self, serializer: SE) -> Result<SE::Ok, SE::Error>
+    where
+        SE: Serializer,
+    {
+        serializer.serialize_str(&self.to_bytes().encode_hex_upper::<String>())
+    }
+}
+
+impl<'de> Deserialize<'de> for ScalarInner {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let d_str = String::deserialize(deserializer)
+            .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))?;
+        let d_byte = <ScalarInner as Bytes>::BytesType::from_hex(d_str)
+            .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))?;
+        ScalarInner::from_bytes(d_byte)
+            .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))
     }
 }
