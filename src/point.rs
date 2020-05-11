@@ -26,8 +26,9 @@ impl Debug for PointInner {
 impl Bytes for PointInner {
     type BytesType = [u8; 32];
     type Error = EccError;
-    fn from_bytes(bytes: Self::BytesType) -> Result<Self, EccError> {
-        match curve25519_dalek::edwards::CompressedEdwardsY::from_slice(&bytes).decompress() {
+    fn from_bytes(bytes: &[u8]) -> Result<Self, EccError> {
+        assert_eq!(bytes.len(), 32);
+        match curve25519_dalek::edwards::CompressedEdwardsY::from_slice(bytes).decompress() {
             Some(x) => Ok(Self { data: x }),
             None => Err(EccError::ParseError),
         }
@@ -97,14 +98,14 @@ impl DisLogPoint for PointInner {
         let num = [0u8; 32];
         //num.clone_from_slice(&self.data.X.to_bytes()[..]);
 
-        Scalar(ScalarInner::from_bytes(num).unwrap())
+        Scalar(ScalarInner::from_bytes(&num).unwrap())
     }
 
     fn get_y(&self) -> Scalar<Self::Scalar> {
         let num = [0u8; 32];
         //num.clone_from_slice(&self.data.Y.to_bytes()[..]);
 
-        Scalar(ScalarInner::from_bytes(num).unwrap())
+        Scalar(ScalarInner::from_bytes(&num).unwrap())
     }
 }
 
@@ -124,9 +125,9 @@ impl<'de> Deserialize<'de> for PointInner {
     {
         let d_str = String::deserialize(deserializer)
             .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))?;
-        let d_byte = <PointInner as Bytes>::BytesType::from_hex(d_str)
+        let d_byte = Vec::<u8>::from_hex(d_str)
             .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))?;
-        PointInner::from_bytes(d_byte)
+        PointInner::from_bytes(d_byte.as_slice())
             .map_err(|_| serde::de::Error::custom(format_args!("invalid hex string")))
     }
 }
